@@ -1,3 +1,0 @@
-/home/usuari/Programming/Other_things/C/projects/tic_tac_toe/ttt/tic-tac-toe/build/CMakeFiles/rebuild_cache.dir
-/home/usuari/Programming/Other_things/C/projects/tic_tac_toe/ttt/tic-tac-toe/build/CMakeFiles/main.dir
-/home/usuari/Programming/Other_things/C/projects/tic_tac_toe/ttt/tic-tac-toe/build/CMakeFiles/edit_cache.dir
