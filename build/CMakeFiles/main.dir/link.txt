@@ -1,0 +1,1 @@
+/usr/bin/cc  -Wall -Werror -fdump-rtl-expand   CMakeFiles/main.dir/src/main.c.o  -o main -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2 -lSDL2_gfx -lSDL2 

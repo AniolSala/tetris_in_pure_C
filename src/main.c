@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main()
+#include <SDL2/SDL.h>
+
+int main(int argc, char* argv[])
 {
 
+    printf("Hello world\n");
     return 0;
 }
