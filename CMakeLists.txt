@@ -17,11 +17,11 @@ set(SRCS
     # rendering.c
     )
 
-# set(HEADERS
-#     logic.h
-#     rendering.h
-#     game.h
-#     )
+set(HEADERS
+    #     logic.h
+    #     rendering.h
+    src/game.h
+    )
 
 add_executable(main ${SRCS} ${HEADERS})
 target_link_libraries(main ${SDL2_LIBRARIES} ${SDL2_GFX_LIBRARIES})
