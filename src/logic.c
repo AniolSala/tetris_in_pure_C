@@ -5,11 +5,23 @@
 #include "./game.h"
 #include "./tetromino.h"
 
+void new_game(game_t* game)
+{
+    for (int i = 0; i < (N_Y + 4) * N_X; i++) {
+        game->board[i] = EMPTY;
+    }
+    game->falling_tt = rand() % 8;
+    game->next_tt = rand() % 8;
+    game->state = 1;
+
+    generate_new_tt(game, N_X / 2, N_Y);
+}
+
 void check_player_loose(game_t* game)
 {
     for (int i = 0; i < N_X; i++) {
         if (game->board[N_Y * N_X + i] != EMPTY) {
-            printf("You lost!");
+            printf("You lost!\n");
             game->state = 0;
         }
     }

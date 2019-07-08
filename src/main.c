@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 
 #include "./game.h"
+#include "./logic.h"
 #include "./rendering.h"
 #include "./tetromino.h"
 
@@ -39,16 +40,9 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    // ###################################
-    // # Create a new game_t game ########
-    // ###################################
+    // Init the game
     game_t game;
-    for (int i = 0; i < N_X * (N_Y + 4); i++) {
-        game.board[i] = EMPTY; // Initialize it to emtpy
-    }
-    game.state = 1;
-    generate_new_tt(&game, N_X / 2, N_Y);
-    // ###################################
+    new_game(&game);
 
     // Manage the window
     float dt, t_0 = clock();
@@ -92,6 +86,9 @@ int main(int argc, char* argv[])
         SDL_RenderClear(renderer);
         render_game(renderer, &game);
         SDL_RenderPresent(renderer);
+
+        // Check for the game status
+        check_player_loose(&game);
     }
 
     // Finish the window

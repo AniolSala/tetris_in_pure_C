@@ -11,8 +11,13 @@ void generate_new_tt(game_t* game, int x_pos, int y_pos)
     /* Generate a new tetromino on the position given by
     the grid coords (x_pos, y_pos) */
 
+    int pieces[] = { 'S', 'Z', 'L', 'J', 'T', 'O', 'I' };
+
     // New tetromino
-    game->falling_tt = rand() % 8;
+    game->falling_tt
+        = game->next_tt;
+    game->next_tt = rand() % 7 + 1;
+    printf("Next piece: %c\n", pieces[game->next_tt - 1]);
 
     // The indexes of the board that contain a tetromino
     switch (game->falling_tt) {
@@ -37,7 +42,7 @@ void generate_new_tt(game_t* game, int x_pos, int y_pos)
     case (TETR_J): // J
         game->tetromino[0] = (y_pos + 0) * N_X + x_pos + 0;
         game->tetromino[1] = (y_pos + 1) * N_X + x_pos + 0;
-        game->tetromino[2] = (y_pos + 0) * N_X + x_pos + 1;
+        game->tetromino[2] = (y_pos + 0) * N_X + x_pos - 1;
         game->tetromino[3] = (y_pos + 2) * N_X + x_pos + 0;
         break;
     case (TETR_T): // T
@@ -68,12 +73,12 @@ bool check_move(game_t* game, int* dx)
         int pos_tt = game->tetromino[i];
         int next_pos_tt = game->tetromino[i] + dx[i];
 
-        bool cond_1 = pos_tt % N_X < next_pos_tt % N_X && pos_tt % N_X == 0;       // Left wall
-        bool cond_2 = pos_tt % N_X > next_pos_tt % N_X && (pos_tt + 1) % N_X == 0; // Right wall
-        bool cond_3 = next_pos_tt < 0;                                             // Bottom
-        bool cond_4 = game->board[pos_tt + dx[i]] != EMPTY && pos_tt + dx[i] > 0;  // Collision
-        if (cond_1 || cond_2 || cond_3 || cond_4) {
-            printf("%d, %d, %d, %d\n", cond_1, cond_2, cond_3, cond_4);
+        bool cond_1 = abs(next_pos_tt % N_X - pos_tt % N_X) >= 4; // Left wall
+        // bool cond_2 = (next_pos_tt % N_X > pos_tt % N_X) && (dx[i] < 0);          // Left wall
+        bool cond_2 = next_pos_tt < 0;                                            // Bottom
+        bool cond_3 = game->board[pos_tt + dx[i]] != EMPTY && pos_tt + dx[i] > 0; // Collision
+
+        if (cond_1 || cond_2 || cond_3) {
             return false;
         }
     }

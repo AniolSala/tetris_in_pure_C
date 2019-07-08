@@ -13,13 +13,13 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -fdump-rtl-expand")
 
 set(SRCS
     src/main.c
-    # logic.c
+    src/logic.c
     src/rendering.c
     src/tetromino.c
     )
 
 set(HEADERS
-    #     logic.h
+    src/logic.h
     src/rendering.h
     src/game.h
     src/tetromino.h
