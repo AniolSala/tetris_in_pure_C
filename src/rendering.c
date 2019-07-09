@@ -22,6 +22,7 @@ const SDL_Color J_COLOR = { .r = 0, .g = 0, .b = 255, .a = 255 };
 const SDL_Color T_COLOR = { .r = 204, .g = 51, .b = 255, .a = 255 };
 const SDL_Color O_COLOR = { .r = 255, .g = 255, .b = 0, .a = 255 };
 const SDL_Color I_COLOR = { .r = 0, .g = 255, .b = 255, .a = 255 };
+const SDL_Color SHADOW_COLOR = { .r = 200, .g = 200, .b = 200, .a = 80 };
 // Titles
 char title_next_tt[] = "Next block";
 char title_saved_tt[] = "Stored block";
@@ -97,6 +98,24 @@ void render_piece(SDL_Renderer* renderer, int pos_x, int pos_y, SDL_Color* color
         GRID_COLOR.a);
 }
 
+void render_shadow(SDL_Renderer* renderer, game_t* game)
+{
+    SDL_Color color = SHADOW_COLOR;
+    // Take the bottom pieces
+    int max_dx = 0;
+    while (check_move(game, (int[]) { -max_dx, -max_dx, -max_dx, -max_dx })) {
+        max_dx += N_X;
+    }
+    max_dx -= N_X;
+
+    // Render the shadow
+    for (int i = 0; i < 4; i++) {
+        int pos_x = CELL_WIDTH * (game->tetromino[i] % N_X);
+        int pos_y = BOARD_HEIGHT - CELL_HEIGHT - CELL_HEIGHT * ((game->tetromino[i] - max_dx) / N_X);
+        render_piece(renderer, pos_x, pos_y, &color);
+    }
+}
+
 void render_text(SDL_Renderer* renderer, int pos_x, int pos_y, int w, int h, char* msg)
 {
     TTF_Font* Sans = TTF_OpenFont(font, 40);
@@ -153,6 +172,7 @@ void render_board(SDL_Renderer* renderer, game_t* game)
     // Render the grid and the falling tetromino
     render_grid(renderer, &GRID_COLOR);
     render_moving_tt(renderer, game);
+    render_shadow(renderer, game);
 }
 
 void render_squares_sp(SDL_Renderer* renderer, int origin_x, int origin_y, char* text)
@@ -205,7 +225,7 @@ void render_tt_sp(SDL_Renderer* renderer, int origin_x, int origin_y, int type)
     pos = NULL;
 }
 
-char* board_ld_to_char(game_t* game)
+char* board_score_to_char(game_t* game)
 {
     int size = 32;
     char* buffer = (char*)malloc(32 * sizeof(char));
@@ -232,7 +252,7 @@ void render_side_panel(SDL_Renderer* renderer, game_t* game)
     render_tt_sp(renderer, origin_x, origin_y + 230, game->saved_tt);
 
     // Render score
-    render_text(renderer, origin_x + 70, origin_y + 490, 20, 20, board_ld_to_char(game));
+    render_text(renderer, origin_x + 70, origin_y + 490, 35, 35, board_score_to_char(game));
 }
 
 void render_game(SDL_Renderer* renderer, game_t* game)

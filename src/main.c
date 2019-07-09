@@ -94,15 +94,15 @@ int main(int argc, char* argv[])
         if (!game.pause && (float)((float)clock() - t_0) / CLOCKS_PER_SEC >= dt) {
             move_tt(&game, (int[]) { -N_X, -N_X, -N_X, -N_X });
             t_0 = clock();
+
+            // Check for the game status
+            check_player_loose(&game);
         }
         // Render the game
         SDL_SetRenderDrawColor(renderer, 250, 255, 255, 255);
         SDL_RenderClear(renderer);
         render_game(renderer, &game);
         SDL_RenderPresent(renderer);
-
-        // Check for the game status
-        check_player_loose(&game);
     }
 
     // Finish the window
