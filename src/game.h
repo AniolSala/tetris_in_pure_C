@@ -29,6 +29,7 @@ typedef struct
     int board[N_X * (N_Y + 4)]; // 3 extra columns for tetromino initiallization
     int tetromino[4];           // Keep track of the moving tetromino
     int falling_tt;             // The type of block is falling
+    int shadow_tt[4];           // Positions of the shadow
     int next_tt;                // Next tetromino to fall
     int saved_tt;               // The tetromino saved
     bool saved;                 // Check if a figure has been save in this turn

@@ -197,6 +197,18 @@ int* get_dx_rotation(game_t* game)
     return rotated_dx;
 }
 
+void update_shadow_coords(game_t* game)
+{
+    int max_dx = 0;
+    while (check_move(game, (int[]) { -max_dx, -max_dx, -max_dx, -max_dx })) {
+        max_dx += N_X;
+    }
+    max_dx -= N_X;
+    for (int i = 0; i < 4; i++) {
+        game->shadow_tt[i] = game->tetromino[i] - max_dx;
+    }
+}
+
 void move_tt(game_t* game, int* dx)
 {
     // ----- Moving ----------------------------
@@ -217,6 +229,7 @@ void move_tt(game_t* game, int* dx)
             = false; // Falling block can be saved again
         generate_new_tt(game, N_X / 2, N_Y);
     }
+    update_shadow_coords(game);
 }
 
 void rotate_tt(game_t* game)

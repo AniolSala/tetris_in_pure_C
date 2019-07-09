@@ -26,6 +26,7 @@ void save_falling_tt(game_t* game)
     }
 
     game->saved = true;
+    update_shadow_coords(game);
 }
 
 void pause_game(game_t* game)

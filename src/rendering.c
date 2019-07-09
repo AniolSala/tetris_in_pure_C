@@ -101,17 +101,9 @@ void render_piece(SDL_Renderer* renderer, int pos_x, int pos_y, SDL_Color* color
 void render_shadow(SDL_Renderer* renderer, game_t* game)
 {
     SDL_Color color = SHADOW_COLOR;
-    // Take the bottom pieces
-    int max_dx = 0;
-    while (check_move(game, (int[]) { -max_dx, -max_dx, -max_dx, -max_dx })) {
-        max_dx += N_X;
-    }
-    max_dx -= N_X;
-
-    // Render the shadow
     for (int i = 0; i < 4; i++) {
-        int pos_x = CELL_WIDTH * (game->tetromino[i] % N_X);
-        int pos_y = BOARD_HEIGHT - CELL_HEIGHT - CELL_HEIGHT * ((game->tetromino[i] - max_dx) / N_X);
+        int pos_x = CELL_WIDTH * (game->shadow_tt[i] % N_X);
+        int pos_y = BOARD_HEIGHT - CELL_HEIGHT - CELL_HEIGHT * (game->shadow_tt[i] / N_X);
         render_piece(renderer, pos_x, pos_y, &color);
     }
 }
