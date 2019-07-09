@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_ttf.h>
 #include <math.h>
 #include <stdbool.h>
 
@@ -12,6 +13,7 @@
 const SDL_Color BG_COLOR = { .r = 255, .g = 255, .b = 255, .a = 255 };
 const SDL_Color GRID_COLOR = { .r = 100, .g = 100, .b = 150, .a = 255 };
 const SDL_Color SP_COLOR = { .r = 255, .g = 255, .b = 255, .a = 255 };
+const SDL_Color BLACK = { .r = 0, .g = 0, .b = 0, .a = 0 };
 // Tetrominos color
 const SDL_Color S_COLOR = { .r = 0, .g = 255, .b = 0, .a = 255 };
 const SDL_Color Z_COLOR = { .r = 255, .g = 0, .b = 0, .a = 255 };
@@ -20,6 +22,11 @@ const SDL_Color J_COLOR = { .r = 0, .g = 0, .b = 255, .a = 255 };
 const SDL_Color T_COLOR = { .r = 204, .g = 51, .b = 255, .a = 255 };
 const SDL_Color O_COLOR = { .r = 255, .g = 255, .b = 0, .a = 255 };
 const SDL_Color I_COLOR = { .r = 0, .g = 255, .b = 255, .a = 255 };
+// Titles
+char title_next_tt[] = "Next block";
+char title_saved_tt[] = "Stored block";
+char score[] = "Score";
+char font[] = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-BoldItalic.ttf";
 
 SDL_Color get_piece_color(int tt_type)
 {
@@ -69,7 +76,7 @@ void render_grid(SDL_Renderer* renderer, const SDL_Color* color)
     }
 }
 
-void render_piece(SDL_Renderer* renderer, SDL_Color* color, int pos_x, int pos_y)
+void render_piece(SDL_Renderer* renderer, int pos_x, int pos_y, SDL_Color* color)
 {
     int red_size = 1;
     roundedBoxRGBA(renderer,
@@ -90,6 +97,31 @@ void render_piece(SDL_Renderer* renderer, SDL_Color* color, int pos_x, int pos_y
         GRID_COLOR.a);
 }
 
+void render_text(SDL_Renderer* renderer, int pos_x, int pos_y, int w, int h, char* msg)
+{
+    TTF_Font* Sans = TTF_OpenFont(font, 40);
+    if (!Sans) {
+        printf("Couldn't open the font\n");
+    }
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, msg, BLACK);
+    SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+    SDL_Rect Message_rect;
+    Message_rect.x = pos_x;
+    Message_rect.y = pos_y;
+
+    Message_rect.w = w;
+    Message_rect.h = h;
+
+    SDL_QueryTexture(Message, NULL, NULL, &pos_x, &pos_y);
+    SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
+
+    // Deallocation
+    TTF_CloseFont(Sans);
+    SDL_DestroyTexture(Message);
+    SDL_FreeSurface(surfaceMessage);
+}
+
 void render_moving_tt(SDL_Renderer* renderer, game_t* game)
 {
     SDL_Color falling_tt_color = get_piece_color(game->falling_tt);
@@ -98,7 +130,7 @@ void render_moving_tt(SDL_Renderer* renderer, game_t* game)
     for (int i = 0; i < 4; i++) {
         int pos_x = CELL_WIDTH * (game->tetromino[i] % N_X);
         int pos_y = BOARD_HEIGHT - CELL_HEIGHT - CELL_HEIGHT * (game->tetromino[i] / N_X);
-        render_piece(renderer, &falling_tt_color, pos_x, pos_y);
+        render_piece(renderer, pos_x, pos_y, &falling_tt_color);
     }
 }
 
@@ -114,7 +146,7 @@ void render_board(SDL_Renderer* renderer, game_t* game)
             piece_color = get_piece_color(spot);
             int pos_x = CELL_WIDTH * (i % N_X);
             int pos_y = BOARD_HEIGHT - CELL_HEIGHT - CELL_HEIGHT * (i / N_X);
-            render_piece(renderer, &piece_color, pos_x, pos_y);
+            render_piece(renderer, pos_x, pos_y, &piece_color);
         }
     }
 
@@ -123,14 +155,89 @@ void render_board(SDL_Renderer* renderer, game_t* game)
     render_moving_tt(renderer, game);
 }
 
-void render_side_panel()
+void render_squares_sp(SDL_Renderer* renderer, int origin_x, int origin_y, char* text)
 {
     //
+    render_text(renderer, origin_x + 30, origin_y - 30, 100, 20, text);
+    roundedRectangleRGBA(renderer,
+        origin_x, origin_y,                                    // Top left
+        origin_x + 5 * CELL_WIDTH, origin_y + 5 * CELL_HEIGHT, // Top right
+        20,
+        GRID_COLOR.r,
+        GRID_COLOR.g,
+        GRID_COLOR.b,
+        GRID_COLOR.a);
+}
+
+void render_tt_sp(SDL_Renderer* renderer, int origin_x, int origin_y, int type)
+{
+    int** pos = rel_pieces_pos(type);
+    SDL_Color color = get_piece_color(type);
+    int dx = 0;
+    int dy = 0;
+    switch (type) {
+    case TETR_O:
+        dx = CELL_WIDTH / 2;
+        dy = -CELL_HEIGHT / 2;
+        break;
+    case TETR_I:
+        dy = CELL_HEIGHT / 2;
+        break;
+    case TETR_L:
+        dx = -CELL_HEIGHT / 2;
+        break;
+    case TETR_J:
+        dx = CELL_HEIGHT / 2;
+        break;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        render_piece(renderer,
+            origin_x + CELL_WIDTH * (2 + pos[i][0]) + dx,  // x_piece_sp + CELL_WIDTH,
+            origin_y + CELL_HEIGHT * (3 - pos[i][1]) + dy, //y_piece_sp - CELL_HEIGHT,
+            &color);
+    }
+    for (int i = 0; i < 4; i++) {
+        free(pos[i]);
+        pos[i] = NULL;
+    }
+    free(pos);
+    pos = NULL;
+}
+
+char* board_ld_to_char(game_t* game)
+{
+    int size = 32;
+    char* buffer = (char*)malloc(32 * sizeof(char));
+    long unsigned ret = snprintf(buffer, size, "%lu", game->score);
+
+    if (ret >= sizeof(buffer)) {
+        printf("Resize the buffer\n");
+    }
+    return buffer;
+}
+
+void render_side_panel(SDL_Renderer* renderer, game_t* game)
+{
+    int origin_x = SCREEN_WIDTH - 175;
+    int origin_y = 60;
+
+    // Render the next tetromino box
+    render_squares_sp(renderer, origin_x, origin_y, title_next_tt);
+    render_squares_sp(renderer, origin_x, origin_y + 230, title_saved_tt);
+    render_text(renderer, origin_x + 60, origin_y + 450, 40, 20, score);
+
+    // Render pieces
+    render_tt_sp(renderer, origin_x, origin_y, game->next_tt);
+    render_tt_sp(renderer, origin_x, origin_y + 230, game->saved_tt);
+
+    // Render score
+    render_text(renderer, origin_x + 70, origin_y + 490, 20, 20, board_ld_to_char(game));
 }
 
 void render_game(SDL_Renderer* renderer, game_t* game)
 {
-    check_line_made(game);
+    // check_line_made(game);
     render_board(renderer, game);
-    render_side_panel();
+    render_side_panel(renderer, game);
 }

@@ -4,7 +4,7 @@
 
 #define BOARD_WIDTH 320
 #define BOARD_HEIGHT 640
-#define SCREEN_WIDTH 480
+#define SCREEN_WIDTH 520
 #define SCREEN_HEIGHT 640
 
 #define N_X 10
@@ -29,8 +29,12 @@ typedef struct
     int board[N_X * (N_Y + 4)]; // 3 extra columns for tetromino initiallization
     int tetromino[4];           // Keep track of the moving tetromino
     int falling_tt;             // The type of block is falling
-    int next_tt;
-    bool state; // Game finished or not finished
+    int next_tt;                // Next tetromino to fall
+    int saved_tt;               // The tetromino saved
+    bool saved;                 // Check if a figure has been save in this turn
+    bool state;                 // Game finished or not finished
+    bool pause;                 // Game paused
+    long unsigned score;        // Score of the player
 } game_t;
 
 #endif

@@ -6,7 +6,7 @@ find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
 find_package(PkgConfig)
-pkg_check_modules(SDL2_GFX SDL2_gfx)
+pkg_check_modules(SDL2_GFX SDL2_gfx SDL2_ttf)
 include_directories(${SDL2_GFX_INCLUDE_DIRS})
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -fdump-rtl-expand")

@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "./game.h"
 #include "./logic.h"
@@ -21,6 +22,7 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Could not initialize sdl2: %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
+    TTF_Init();
 
     SDL_Window* window = SDL_CreateWindow("Procedural",
         100, 100,
@@ -59,25 +61,37 @@ int main(int argc, char* argv[])
             // Keys
             case SDL_KEYDOWN:
                 // key down
-                if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
-                    dt = .05;
+                if (!game.pause) {
+
+                    if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+                        // Hard drop
+                        dt = 0.;
+                    }
+                    // key up
+                    if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+                        rotate_tt(&game);
+                    }
+                    // key left
+                    if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+                        move_tt(&game, (int[]) { -1, -1, -1, -1 });
+                    }
+                    // key right
+                    if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+                        move_tt(&game, (int[]) { 1, 1, 1, 1 });
+                    }
+                    // key S
+                    if (e.key.keysym.scancode == SDL_SCANCODE_S) {
+                        save_falling_tt(&game);
+                    }
                 }
-                // key up
-                if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
-                    rotate_tt(&game);
-                }
-                // key left
-                if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
-                    move_tt(&game, (int[]) { -1, -1, -1, -1 });
-                }
-                // key right
-                if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
-                    move_tt(&game, (int[]) { 1, 1, 1, 1 });
+                // key `space`
+                if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                    pause_game(&game);
                 }
             }
         }
         // Move the tetromino every dt seconds
-        if ((float)((float)clock() - t_0) / CLOCKS_PER_SEC >= dt) {
+        if (!game.pause && (float)((float)clock() - t_0) / CLOCKS_PER_SEC >= dt) {
             move_tt(&game, (int[]) { -N_X, -N_X, -N_X, -N_X });
             t_0 = clock();
         }
@@ -93,6 +107,7 @@ int main(int argc, char* argv[])
 
     // Finish the window
     SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
 
     printf("\n\nProgram terminated with exit (%d, %s)\n", argc, *argv);

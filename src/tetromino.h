@@ -7,6 +7,7 @@
 #define MOVE_RIGHT 1
 #define MOVE_DOWN -N_X
 
+int** rel_pieces_pos(int tt_type);
 void generate_new_tt(game_t* game, int x_pos, int y_pos);
 void move_tt(game_t* game, int* dx);
 void rotate_tt(game_t* game);
