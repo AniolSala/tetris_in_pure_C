@@ -11,15 +11,17 @@ Controls:
 * S key: Save the current block
 * P key: Pause
 
-To build the game open the terminal in the Tetris folder and type:
+To build the game open the terminal in the Tetris folder, create a folder named ``` build/ ``` and type:
 
 ```/path/to/Tetris $ cd build/```
 
-```/path/to/Tetris $ cmake ..```
+```/path/to/Tetris/build $ cd build/```
+
+```/path/to/Tetris/build $ cmake ..```
 
 If no errors appeared, then type:
 
-```/path/to/Tetris/ $ ./main```
+```/path/to/Tetris/build $ ./main```
 
 **NOTE**: To build the project you will need:
 
