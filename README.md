@@ -12,8 +12,8 @@ Controls:
 
 To build the game open the terminal in the Tetris folder and type:
 
-/path/to/Tetris $ cd build/
-/path/to/Tetris $ cmake ..
+- > /path/to/Tetris $ cd build/
+- > /path/to/Tetris $ cmake ..
 
 If no errors appeared, then type:
 
