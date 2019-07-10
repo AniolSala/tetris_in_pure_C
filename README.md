@@ -16,8 +16,6 @@ To build the game open the terminal in the Tetris folder, create a folder named 
 ```
 /path/to/Tetris $ cd build/
 
-/path/to/Tetris/build $ cd build/
-
 /path/to/Tetris/build $ cmake ..
 ```
 
