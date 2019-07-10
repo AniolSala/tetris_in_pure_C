@@ -40,8 +40,8 @@ If no errors appeared, then type:
 
     TODO:
 
-    Adding music and sound effects
-    Adding some animation when a line is completed
+    Addmusic and sound effects
+    Add some animation when a line is completed
     Write the current level somewhere
     Improve the rendering of the side panel
 
