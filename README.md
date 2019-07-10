@@ -21,7 +21,11 @@ To build the game open the terminal in the Tetris folder, create a folder named 
 
 If no errors appeared, then type:
 
-```/path/to/Tetris/build $ ./main```
+```
+/path/to/Tetris/build $ make
+
+/path/to/Tetris/build $ ./main
+```
 
 **NOTE**: To build the project you will need:
 
