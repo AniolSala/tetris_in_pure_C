@@ -34,3 +34,11 @@ If no errors appeared, then type:
 
 ![tetris in C](./media/tetris.gif)
 
+    TODO:
+
+    * Adding music and sound effects
+    * Adding some animation when a line is completed
+    * Write the current level somewhere
+    * Improve the rendering of the side panel
+
+
