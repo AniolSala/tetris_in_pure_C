@@ -133,6 +133,7 @@ void generate_new_tt(game_t* game, int x_pos, int y_pos)
     for (int i = 0; i < 4; i++) {
         game->tetromino[i] = (x_pos + rel_pos[i][0]) + (y_pos + rel_pos[i][1]) * N_X;
     }
+    update_shadow_coords(game);
 
     // Free the pointer
     for (int i = 0; i < 4; i++) {
@@ -197,6 +198,17 @@ int* get_dx_rotation(game_t* game)
     return rotated_dx;
 }
 
+void hard_move(game_t* game)
+{
+    // Extra points for a hard move!
+    game->score += game->tetromino[0] / N_X - game->shadow_tt[0] / N_X;
+
+    // Move the tetromino to the lowest possible spot
+    for (int i = 0; i < 4; i++) {
+        game->tetromino[i] = game->shadow_tt[i];
+    }
+}
+
 void update_shadow_coords(game_t* game)
 {
     int max_dx = 0;
@@ -225,8 +237,7 @@ void move_tt(game_t* game, int* dx)
         }
         // Generete a new tetromino
         check_line_made(game);
-        game->saved
-            = false; // Falling block can be saved again
+        game->saved = false; // Falling block can be saved again
         generate_new_tt(game, N_X / 2, N_Y);
     }
     update_shadow_coords(game);
@@ -235,11 +246,10 @@ void move_tt(game_t* game, int* dx)
 void rotate_tt(game_t* game)
 {
     // Don't rotate the O
-    int* dx_rotation = get_dx_rotation(game);
     if (game->falling_tt != TETR_O) {
+        int* dx_rotation = get_dx_rotation(game);
         move_tt(game, dx_rotation);
+        free(dx_rotation);
+        dx_rotation = NULL;
     }
-
-    free(dx_rotation);
-    dx_rotation = NULL;
 }

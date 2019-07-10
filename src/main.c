@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
 #include "./game.h"
@@ -24,7 +25,7 @@ int main(int argc, char* argv[])
     }
     TTF_Init();
 
-    SDL_Window* window = SDL_CreateWindow("Procedural",
+    SDL_Window* window = SDL_CreateWindow("Tetris",
         100, 100,
         SCREEN_WIDTH, SCREEN_HEIGHT,
         SDL_WINDOW_SHOWN);
@@ -47,10 +48,19 @@ int main(int argc, char* argv[])
     new_game(&game);
 
     // Manage the window
-    float dt, t_0 = clock();
+    float t_0, dt, max_dt = .5;
+    int levels_increased = 0;
+    int threshold = 1500;
+
     SDL_Event e;
+    t_0 = clock();
     while (game.state) {
-        dt = .5;
+        dt = max_dt;
+        if (game.score / threshold > (unsigned long)levels_increased && max_dt >= 0) {
+            levels_increased += game.score / threshold;
+            // Let's make 10 levels
+            max_dt -= .5 / 10;
+        }
 
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
@@ -63,13 +73,18 @@ int main(int argc, char* argv[])
                 // key down
                 if (!game.pause) {
 
-                    if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+                    if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
                         // Hard drop
-                        dt = 0.;
+                        hard_move(&game);
+                        t_0 = clock(); // Let move one position
+                        dt = .25;
                     }
                     // key up
-                    if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+                    if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
                         rotate_tt(&game);
+                    }
+                    if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+                        dt = 0;
                     }
                     // key left
                     if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
@@ -85,7 +100,7 @@ int main(int argc, char* argv[])
                     }
                 }
                 // key `space`
-                if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                if (e.key.keysym.scancode == SDL_SCANCODE_P) {
                     pause_game(&game);
                 }
             }

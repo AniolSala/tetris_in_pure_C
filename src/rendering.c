@@ -184,6 +184,7 @@ void render_squares_sp(SDL_Renderer* renderer, int origin_x, int origin_y, char*
 void render_tt_sp(SDL_Renderer* renderer, int origin_x, int origin_y, int type)
 {
     int** pos = rel_pieces_pos(type);
+
     SDL_Color color = get_piece_color(type);
     int dx = 0;
     int dy = 0;
@@ -224,7 +225,7 @@ char* board_score_to_char(game_t* game)
     long unsigned ret = snprintf(buffer, size, "%lu", game->score);
 
     if (ret >= sizeof(buffer)) {
-        printf("Resize the buffer\n");
+        // printf("Resize the buffer\n");
     }
     return buffer;
 }

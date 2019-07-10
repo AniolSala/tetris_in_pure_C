@@ -26,7 +26,7 @@ void save_falling_tt(game_t* game)
     }
 
     game->saved = true;
-    update_shadow_coords(game);
+    // update_shadow_coords(game);
 }
 
 void pause_game(game_t* game)
@@ -54,7 +54,7 @@ void check_player_loose(game_t* game)
 {
     for (int i = 0; i < N_X; i++) {
         if (game->board[N_Y * N_X + i] != EMPTY) {
-            printf("You lost!\n");
+            printf("You loose!\n");
             game->state = 0;
         }
     }
