@@ -9,6 +9,7 @@ Controls:
 * Down key: Inrease speed
 * Space key: Rotate
 * S key: Save the current block
+* P key: Pause
 
 To build the game open the terminal in the Tetris folder and type:
 
