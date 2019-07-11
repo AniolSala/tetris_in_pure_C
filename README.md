@@ -14,17 +14,17 @@ Controls:
 To build the game open the terminal in the Tetris folder, create a folder named ` build/ ` and type:
 
 `
-/path/to/Tetris $ cd build/
+/path/to/tetris_in_pure_C $ cd build/
 
-/path/to/Tetris/build $ cmake ..
+/path/to/tetris_in_pure_C/build $ cmake ..
 `
 
 If no errors appeared, then type:
 
 `
-/path/to/Tetris/build $ make
+/path/to/tetris_in_pure_C/build $ make
 
-/path/to/Tetris/build $ ./main
+/path/to/tetris_in_pure_C/build $ ./main
 `
 
 **NOTE**: To build the project you will need:
