@@ -29,7 +29,7 @@ char title_saved_tt[] = "Stored block";
 char score[] = "Score";
 char font[] = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-BoldItalic.ttf";
 
-SDL_Color get_piece_color(int tt_type)
+const SDL_Color get_piece_color(int tt_type)
 {
     SDL_Color piece_color;
 
@@ -77,7 +77,7 @@ void render_grid(SDL_Renderer* renderer, const SDL_Color* color)
     }
 }
 
-void render_piece(SDL_Renderer* renderer, int pos_x, int pos_y, SDL_Color* color)
+void render_piece(SDL_Renderer* renderer, int pos_x, int pos_y, const SDL_Color* color)
 {
     int red_size = 1;
     roundedBoxRGBA(renderer,
@@ -100,11 +100,10 @@ void render_piece(SDL_Renderer* renderer, int pos_x, int pos_y, SDL_Color* color
 
 void render_shadow(SDL_Renderer* renderer, game_t* game)
 {
-    SDL_Color color = SHADOW_COLOR;
     for (int i = 0; i < 4; i++) {
         int pos_x = CELL_WIDTH * (game->shadow_tt[i] % N_X);
         int pos_y = BOARD_HEIGHT - CELL_HEIGHT - CELL_HEIGHT * (game->shadow_tt[i] / N_X);
-        render_piece(renderer, pos_x, pos_y, &color);
+        render_piece(renderer, pos_x, pos_y, &SHADOW_COLOR);
     }
 }
 
