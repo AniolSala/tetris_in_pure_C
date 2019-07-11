@@ -26,6 +26,12 @@
 
 typedef struct
 {
+    int pos[4][2];
+    int type[4][2];
+} tetromino_t;
+
+typedef struct
+{
     int board[N_X * (N_Y + 4)]; // 3 extra columns for tetromino initiallization
     int tetromino[4];           // Keep track of the moving tetromino
     int falling_tt;             // The type of block is falling
