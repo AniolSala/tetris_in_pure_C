@@ -72,17 +72,82 @@ bool check_single_line(game_t* game, int line)
     return false;
 }
 
-void check_line_made(game_t* game)
+int* get_lines_made(game_t* game, int* n_lines)
 {
     int cells_filled;
-    int lines_completed = 0;
+    int count_lines_completed = 0;
+
+    int* lines_made = (int*)malloc(4 * sizeof(int));
+    if (!lines_made) {
+        printf("Couldn't count the lines made\n");
+    }
 
     int current_line = 0;
     while (current_line < N_Y) {
         cells_filled = 0;
+
+        // Check all the cells for line `current_line`
         for (int j = 0; j < N_X; j++) {
+            // If we found one empty cell check the next line
             if (game->board[current_line * N_X + j] == EMPTY) {
-                // printf("Line %d: Position (%d, %d) is empty\n", i, j, i);
+                break;
+            } else {
+                cells_filled++;
+            }
+        }
+        // If line `i` completed:
+        if (cells_filled == N_X) {
+            count_lines_completed++;
+            lines_made[count_lines_completed - 1] = current_line;
+            // call render_lines_made
+
+            // for (int k = current_line; k < N_Y; k++) {
+            //     for (int m = 0; m < N_X; m++) {
+            //         game->board[k * N_X + m] = game->board[(k + 1) * N_X + m];
+            //     }
+            // }
+        }
+        current_line++;
+    }
+    for (int i = 0; i < count_lines_completed; i++) {
+        printf("line %d made\n", lines_made[i]);
+    }
+    printf("---------------\n");
+    switch (count_lines_completed) {
+    case 1:
+        game->score += 40;
+        break;
+    case 2:
+        game->score += 100;
+        break;
+    case 3:
+        game->score += 300;
+        break;
+    case 4:
+        game->score += 1200;
+        break;
+    }
+
+    if (count_lines_completed) {
+        *n_lines = count_lines_completed;
+        return lines_made;
+    }
+    return NULL;
+}
+
+void check_lines_made(game_t* game)
+{
+    int cells_filled;
+    int count_lines_completed = 0;
+
+    int current_line = 0;
+    while (current_line < N_Y) {
+        cells_filled = 0;
+
+        // Check all the cells for line `current_line`
+        for (int j = 0; j < N_X; j++) {
+            // If we found one empty cell check the next line
+            if (game->board[current_line * N_X + j] == EMPTY) {
                 current_line++;
                 break;
             } else {
@@ -91,7 +156,7 @@ void check_line_made(game_t* game)
         }
         // If line `i` completed:
         if (cells_filled == N_X) {
-            lines_completed++;
+            count_lines_completed++;
             for (int k = current_line; k < N_Y; k++) {
                 for (int m = 0; m < N_X; m++) {
                     game->board[k * N_X + m] = game->board[(k + 1) * N_X + m];
@@ -99,7 +164,7 @@ void check_line_made(game_t* game)
             }
         }
     }
-    switch (lines_completed) {
+    switch (count_lines_completed) {
     case 1:
         game->score += 40;
         break;

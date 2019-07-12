@@ -3,6 +3,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <math.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "./game.h"
 #include "./logic.h"
@@ -28,6 +29,32 @@ char title_next_tt[] = "Next block";
 char title_saved_tt[] = "Stored block";
 char score[] = "Score";
 char font[] = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-BoldItalic.ttf";
+
+void render_lines_made(SDL_Renderer* renderer, game_t* game, int* lines, int n_lines)
+{
+    int t_0 = clock();
+    for (int i = 0; i < N_X; i++) {
+        int pos_x = CELL_WIDTH * (i % N_X);
+        for (int j = 0; j < n_lines; j++) {
+            int pos_y = BOARD_HEIGHT - CELL_HEIGHT - CELL_HEIGHT * (j / N_X);
+            // Change the color
+            boxRGBA(renderer,
+                pos_x, pos_y,                            // Top left
+                pos_x + CELL_WIDTH, pos_y + CELL_HEIGHT, // Top right
+                255,
+                255,
+                255,
+                255);
+
+            // Remove the line
+            while ((float)(clock() - t_0) / CLOCKS_PER_SEC > .01) {
+                game->board[lines[j] + i] = game->board[lines[j] + N_X + i];
+                break;
+            }
+            t_0 = clock();
+        }
+    }
+}
 
 const SDL_Color get_piece_color(int tt_type)
 {
@@ -224,7 +251,7 @@ char* board_score_to_char(game_t* game)
     long unsigned ret = snprintf(buffer, size, "%lu", game->score);
 
     if (ret >= sizeof(buffer)) {
-        // printf("Resize the buffer\n");
+        printf("Resize the buffer\n");
     }
     return buffer;
 }

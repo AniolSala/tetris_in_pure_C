@@ -14,34 +14,52 @@
 #include "./rendering.h"
 #include "./tetromino.h"
 
+bool init_everything(SDL_Renderer** renderer, SDL_Window** window);
+
 int main(int argc, char* argv[])
 {
     // Set the seed to pick a tetromino
     srand(time(NULL));
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        fprintf(stderr, "Could not initialize sdl2: %s\n", SDL_GetError());
+    // Init everything:
+    SDL_Window* window = NULL;
+    SDL_Renderer* renderer = NULL;
+    if (!init_everything(&renderer, &window)) {
+        printf("exit failure\n");
         return EXIT_FAILURE;
     }
-    TTF_Init();
+    // if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    //     fprintf(stderr, "Could not initialize sdl2: %s\n", SDL_GetError());
+    //     return EXIT_FAILURE;
+    // }
 
-    SDL_Window* window = SDL_CreateWindow("Tetris",
-        100, 100,
-        SCREEN_WIDTH, SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN);
+    // SDL_Window* window = SDL_CreateWindow("Tetris",
+    //     100, 100,
+    //     SCREEN_WIDTH, SCREEN_HEIGHT,
+    //     SDL_WINDOW_SHOWN);
 
-    if (window == NULL) {
-        fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
-        return EXIT_FAILURE;
-    }
+    // if (window == NULL) {
+    //     fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+    //     return EXIT_FAILURE;
+    // }
+    // SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
+    //     SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    // if (renderer == NULL) {
+    //     SDL_DestroyWindow(window);
+    //     fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
+    //     return EXIT_FAILURE;
+    // }
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (renderer == NULL) {
-        SDL_DestroyWindow(window);
-        fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        return EXIT_FAILURE;
-    }
+    // if (TTF_Init() == -1) {
+    //     printf("Couldnt init TTF\n");
+    //     return EXIT_FAILURE;
+    // }
+
+    // Music and sound effects
+    // Mix_Music* music = NULL;
+    // if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
+    //     return EXIT_FAILURE;
+    // }
 
     // Init the game
     game_t game;
@@ -55,13 +73,16 @@ int main(int argc, char* argv[])
     SDL_Event e;
     t_0 = clock();
     while (game.state) {
+        // Increse level
         dt = max_dt;
-        if (game.score / threshold > (unsigned long)levels_increased && max_dt >= 0) {
+        if (game.score / threshold > (unsigned long)levels_increased) {
             levels_increased += game.score / threshold;
             // Let's make 10 levels
             max_dt -= .5 / 10;
         }
+        max_dt = max_dt < 0 ? 0 : max_dt;
 
+        // Window management
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
             // Quit
@@ -79,10 +100,11 @@ int main(int argc, char* argv[])
                         t_0 = clock(); // Let move one position
                         dt = .25;
                     }
-                    // key up
+                    // key space
                     if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
                         rotate_tt(&game);
                     }
+                    // key down
                     if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
                         dt = 0;
                     }
@@ -99,7 +121,7 @@ int main(int argc, char* argv[])
                         save_falling_tt(&game);
                     }
                 }
-                // key `space`
+                // key P
                 if (e.key.keysym.scancode == SDL_SCANCODE_P) {
                     pause_game(&game);
                 }
@@ -127,4 +149,37 @@ int main(int argc, char* argv[])
 
     printf("\n\nProgram terminated with exit (%d, %s)\n", argc, *argv);
     return EXIT_SUCCESS;
+}
+
+bool init_everything(SDL_Renderer** renderer, SDL_Window** window)
+{
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        fprintf(stderr, "Could not initialize sdl2: %s\n", SDL_GetError());
+        return false;
+    }
+
+    *window = SDL_CreateWindow("Tetris",
+        100, 100,
+        SCREEN_WIDTH, SCREEN_HEIGHT,
+        SDL_WINDOW_SHOWN);
+
+    if (window == NULL) {
+        fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+        return false;
+    }
+
+    *renderer = SDL_CreateRenderer(*window, -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (renderer == NULL) {
+        SDL_DestroyWindow(*window);
+        fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        return false;
+    }
+
+    if (TTF_Init() == -1) {
+        printf("Couldnt init TTF\n");
+        return false;
+    }
+
+    return true;
 }

@@ -32,6 +32,7 @@ typedef struct
     int shadow_tt[4];           // Positions of the shadow
     int next_tt;                // Next tetromino to fall
     int saved_tt;               // The tetromino saved
+    int* lines_made;            // The lines completed
     bool saved;                 // Check if a figure has been save in this turn
     bool state;                 // Game finished or not finished
     bool pause;                 // Game paused

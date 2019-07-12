@@ -236,7 +236,7 @@ void move_tt(game_t* game, int* dx)
             game->board[game->tetromino[i]] = game->falling_tt;
         }
         // Generete a new tetromino
-        check_line_made(game);
+        check_lines_made(game);
         game->saved = false; // Falling block can be saved again
         generate_new_tt(game, N_X / 2, N_Y);
     }
