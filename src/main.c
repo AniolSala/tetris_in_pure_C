@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
                 // key down
                 if (!game.pause) {
 
-                    if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                    if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
                         // Hard drop
                         hard_move(&game);
                         t_0 = clock(); // Let move one position
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
                         rotate_tt(&game);
                     }
                     // key down
-                    if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
+                    if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
                         dt = 0;
                     }
                     // key left

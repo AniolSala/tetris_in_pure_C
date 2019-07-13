@@ -4,10 +4,10 @@ Implementation of Tetris game using pure C and the library SDL.
 
 Controls:
 
-* Left / Right keys: move left / right
-* Up key: Hard drop
-* Down key: Inrease speed
-* Space key: Rotate
+* Left / Right arrow keys: move left / right
+* Up key: Rotate block
+* Down key: Hard drop
+* Space key: Increase falling velocity
 * S key: Save the current block
 * P key: Pause
 
