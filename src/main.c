@@ -28,40 +28,8 @@ int main(int argc, char* argv[])
         printf("exit failure\n");
         return EXIT_FAILURE;
     }
-    // if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-    //     fprintf(stderr, "Could not initialize sdl2: %s\n", SDL_GetError());
-    //     return EXIT_FAILURE;
-    // }
 
-    // SDL_Window* window = SDL_CreateWindow("Tetris",
-    //     100, 100,
-    //     SCREEN_WIDTH, SCREEN_HEIGHT,
-    //     SDL_WINDOW_SHOWN);
-
-    // if (window == NULL) {
-    //     fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
-    //     return EXIT_FAILURE;
-    // }
-    // SDL_Renderer* renderer = SDL_CreateRenderer(window, -1,
-    //     SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    // if (renderer == NULL) {
-    //     SDL_DestroyWindow(window);
-    //     fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
-    //     return EXIT_FAILURE;
-    // }
-
-    // if (TTF_Init() == -1) {
-    //     printf("Couldnt init TTF\n");
-    //     return EXIT_FAILURE;
-    // }
-
-    // Music and sound effects
-    // Mix_Music* music = NULL;
-    // if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
-    //     return EXIT_FAILURE;
-    // }
-
-    // Init the game
+    // Init the board
     game_t game;
     new_game(&game);
 
