@@ -21,11 +21,16 @@ int main(int argc, char* argv[])
     // Set the seed to pick a tetromino
     srand(time(NULL));
 
+    // Music to be played
+    // Mix_Music* music = NULL;
+    // Mix_Chunk* mv_sound = NULL;  // Move block sound
+    // Mix_Chunk* put_sound = NULL; // Place block sound
+
     // Init everything:
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     if (!init_everything(&renderer, &window)) {
-        printf("exit failure\n");
+        printf("Exit failure\n");
         return EXIT_FAILURE;
     }
 
@@ -62,14 +67,14 @@ int main(int argc, char* argv[])
                 // key down
                 if (!game.pause) {
 
-                    if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+                    if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
                         // Hard drop
                         hard_move(&game);
                         t_0 = clock(); // Let move one position
                         dt = .25;
                     }
                     // key space
-                    if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
+                    if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
                         rotate_tt(&game);
                     }
                     // key down
@@ -111,6 +116,7 @@ int main(int argc, char* argv[])
     }
 
     // Finish the window
+    close_files();
     SDL_DestroyWindow(window);
     TTF_Quit();
     SDL_Quit();
@@ -148,6 +154,12 @@ bool init_everything(SDL_Renderer** renderer, SDL_Window** window)
         printf("Couldnt init TTF\n");
         return false;
     }
+
+    load_files();
+
+    // if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
+    //     return false;
+    // }
 
     return true;
 }

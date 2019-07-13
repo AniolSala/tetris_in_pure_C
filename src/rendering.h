@@ -3,5 +3,7 @@
 
 void render_squares_sp(SDL_Renderer* renderer, int origin_x, int origin_y, char* text);
 void render_game(SDL_Renderer* renderer, game_t* game);
+bool load_files();
+void close_files();
 
 #endif

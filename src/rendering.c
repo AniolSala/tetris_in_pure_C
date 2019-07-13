@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
-#include <math.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -28,7 +27,24 @@ const SDL_Color SHADOW_COLOR = { .r = 200, .g = 200, .b = 200, .a = 80 };
 char title_next_tt[] = "Next block";
 char title_saved_tt[] = "Stored block";
 char score[] = "Score";
-char font[] = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-BoldItalic.ttf";
+
+TTF_Font* Sans = NULL;
+
+bool load_files()
+{
+    Sans = TTF_OpenFont("../src/media/dejavu/DejaVuSerif-BoldItalic.ttf", 40);
+
+    if (!Sans) {
+        printf("TTF_Font Error %s\n", TTF_GetError());
+        return false;
+    }
+    return true;
+}
+
+void close_files()
+{
+    TTF_CloseFont(Sans);
+}
 
 void render_lines_made(SDL_Renderer* renderer, game_t* game, int* lines, int n_lines)
 {
@@ -136,10 +152,6 @@ void render_shadow(SDL_Renderer* renderer, game_t* game)
 
 void render_text(SDL_Renderer* renderer, int pos_x, int pos_y, int w, int h, char* msg)
 {
-    TTF_Font* Sans = TTF_OpenFont(font, 40);
-    if (!Sans) {
-        printf("Couldn't open the font\n");
-    }
     SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, msg, BLACK);
     SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
@@ -154,7 +166,6 @@ void render_text(SDL_Renderer* renderer, int pos_x, int pos_y, int w, int h, cha
     SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
 
     // Deallocation
-    TTF_CloseFont(Sans);
     SDL_DestroyTexture(Message);
     SDL_FreeSurface(surfaceMessage);
 }
