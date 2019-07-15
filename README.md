@@ -1,6 +1,6 @@
 # Tetris
 
-Implementation of Tetris game using pure C and the library SDL.
+Implementation of Tetris game using C and the library SDL.
 
 Controls:
 
@@ -43,7 +43,7 @@ If no errors appeared, then type:
 
     TODO:
 
-    Addmusic and sound effects
+    ~~Add music and sound effects~~
     Add some animation when a line is completed
     Write the current level somewhere
     Improve the rendering of the side panel
