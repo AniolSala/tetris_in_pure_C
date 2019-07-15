@@ -30,6 +30,7 @@ If no errors appeared, then type:
 
 ```
 
+
 **NOTE**: To build the project you will need:
 
 * gcc compiler
@@ -39,11 +40,12 @@ If no errors appeared, then type:
 [SDL2_mixer](https://www.libsdl.org/projects/SDL_mixer/) and
 [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/)
 
+
+TODO:
+
+~~Add music and sound effects~~
+Add some animation when a line is completed
+Write the current level somewhere
+Improve the rendering of the side panel
+
 ![tetris in C](./media/tetris.gif)
-
-    TODO:
-
-    ~~Add music and sound effects~~
-    Add some animation when a line is completed
-    Write the current level somewhere
-    Improve the rendering of the side panel
