@@ -69,33 +69,32 @@ int main(int argc, char* argv[])
 
                     if (e.key.keysym.scancode == SDL_SCANCODE_DOWN) {
                         // Hard drop
+                        playSound(HARD_DROP);
                         hard_move(&game);
                         t_0 = clock(); // Let move one position
                         dt = .25;
                     }
-                    // key space
                     if (e.key.keysym.scancode == SDL_SCANCODE_UP) {
+                        playSound(ROTATE);
                         rotate_tt(&game);
                     }
-                    // key down
                     if (e.key.keysym.scancode == SDL_SCANCODE_SPACE) {
                         dt = 0;
                     }
-                    // key left
                     if (e.key.keysym.scancode == SDL_SCANCODE_LEFT) {
+                        playSound(MOVE_RL);
                         move_tt(&game, (int[]) { -1, -1, -1, -1 });
                     }
-                    // key right
                     if (e.key.keysym.scancode == SDL_SCANCODE_RIGHT) {
+                        playSound(MOVE_RL);
                         move_tt(&game, (int[]) { 1, 1, 1, 1 });
                     }
-                    // key S
                     if (e.key.keysym.scancode == SDL_SCANCODE_S) {
                         save_falling_tt(&game);
                     }
                 }
-                // key P
                 if (e.key.keysym.scancode == SDL_SCANCODE_P) {
+                    pauseMusic();
                     pause_game(&game);
                 }
             }
@@ -155,7 +154,13 @@ bool init_everything(SDL_Renderer** renderer, SDL_Window** window)
         return false;
     }
 
+    //Initialize SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+    }
+
     load_files();
+    playMusic();
 
     // if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
     //     return false;

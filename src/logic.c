@@ -1,8 +1,10 @@
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "./game.h"
+#include "./rendering.h"
 #include "./tetromino.h"
 
 void save_falling_tt(game_t* game)
@@ -166,15 +168,19 @@ void check_lines_made(game_t* game)
     }
     switch (count_lines_completed) {
     case 1:
+        playSound(SIMPLE_LINE);
         game->score += 40;
         break;
     case 2:
+        playSound(DOUBLE_LINE);
         game->score += 100;
         break;
     case 3:
+        playSound(TRIPLE_LINE);
         game->score += 300;
         break;
     case 4:
+        playSound(TETRIS);
         game->score += 1200;
         break;
     }

@@ -1,3 +1,4 @@
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,6 +6,7 @@
 
 #include "./game.h"
 #include "./logic.h"
+#include "./rendering.h"
 #include "./tetromino.h"
 
 int** rel_pieces_pos(int tt_type)
@@ -192,7 +194,7 @@ int* get_dx_rotation(game_t* game)
         // Now: new_x = + y_rel
         //      new_y = - x_rel
 
-        // Get the position of each piece in board coordinates
+        // Get the displacement of each piece in board coordinates
         rotated_dx[i] = (y_rel - x_rel) + (-x_rel - y_rel) * N_X;
     }
     return rotated_dx;
@@ -239,6 +241,8 @@ void move_tt(game_t* game, int* dx)
         check_lines_made(game);
         game->saved = false; // Falling block can be saved again
         generate_new_tt(game, N_X / 2, N_Y);
+    } else {
+        playSound(ROTATE_FAIL);
     }
     update_shadow_coords(game);
 }
@@ -247,6 +251,7 @@ void rotate_tt(game_t* game)
 {
     // Don't rotate the O
     if (game->falling_tt != TETR_O) {
+        playSound(ROTATE);
         int* dx_rotation = get_dx_rotation(game);
         move_tt(game, dx_rotation);
         free(dx_rotation);

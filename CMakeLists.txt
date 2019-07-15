@@ -6,8 +6,8 @@ find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
 find_package(PkgConfig)
-pkg_check_modules(SDL2_GFX SDL2_gfx SDL2_ttf)
-include_directories(${SDL2_GFX_INCLUDE_DIRS})
+pkg_check_modules(SDL2_LIBS SDL2_gfx SDL2_mixer SDL2_ttf)
+include_directories(${SDL2_LIBS_INCLUDE_DIRS})
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -fdump-rtl-expand")
 
@@ -26,4 +26,4 @@ set(HEADERS
     )
 
 add_executable(main ${SRCS} ${HEADERS})
-target_link_libraries(main ${SDL2_LIBRARIES} ${SDL2_GFX_LIBRARIES})
+target_link_libraries(main ${SDL2_LIBRARIES} ${SDL2_LIBS_LIBRARIES})

@@ -1,8 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "./game.h"
 #include "./logic.h"
@@ -23,27 +25,137 @@ const SDL_Color T_COLOR = { .r = 204, .g = 51, .b = 255, .a = 255 };
 const SDL_Color O_COLOR = { .r = 255, .g = 255, .b = 0, .a = 255 };
 const SDL_Color I_COLOR = { .r = 0, .g = 255, .b = 255, .a = 255 };
 const SDL_Color SHADOW_COLOR = { .r = 200, .g = 200, .b = 200, .a = 80 };
+
 // Titles
 char title_next_tt[] = "Next block";
 char title_saved_tt[] = "Stored block";
 char score[] = "Score";
 
+// Font
 TTF_Font* Sans = NULL;
+
+// Music and sounds
+Mix_Music* gMusic = NULL;
+Mix_Chunk* gMoveRL = NULL;
+Mix_Chunk* gMoveRLFail = NULL;
+Mix_Chunk* gRotate = NULL;
+Mix_Chunk* gRotateFail = NULL;
+Mix_Chunk* gSoftDrop = NULL;
+Mix_Chunk* gHardDrop = NULL;
+Mix_Chunk* gSimpleLine = NULL;
+Mix_Chunk* gDoubleLine = NULL;
+Mix_Chunk* gTripleLine = NULL;
+Mix_Chunk* gTetris = NULL;
+Mix_Chunk* gSavePiece = NULL;
+Mix_Chunk* gPause = NULL;
+
+void playSound(int sound_type)
+{
+    switch (sound_type) {
+    case MOVE_RL:
+        Mix_PlayChannel(-1, gMoveRL, 0);
+        break;
+    case MOVE_RL_FAIL:
+        Mix_PlayChannel(-1, gMoveRLFail, 0);
+        break;
+    case ROTATE:
+        Mix_PlayChannel(-1, gRotate, 0);
+        break;
+    case ROTATE_FAIL:
+        Mix_PlayChannel(-1, gRotateFail, 0);
+        break;
+    case SOFT_DROP:
+        Mix_PlayChannel(-1, gSoftDrop, 0);
+        break;
+    case HARD_DROP:
+        Mix_PlayChannel(-1, gHardDrop, 0);
+        break;
+    case SIMPLE_LINE:
+        Mix_PlayChannel(-1, gSimpleLine, 0);
+        break;
+    case DOUBLE_LINE:
+        Mix_PlayChannel(-1, gSimpleLine, 0);
+        break;
+    case TRIPLE_LINE:
+        Mix_PlayChannel(-1, gTripleLine, 0);
+        break;
+    case TETRIS:
+        Mix_PlayChannel(-1, gTetris, 0);
+        break;
+    case SAVE_PIECE:
+        Mix_PlayChannel(-1, gSavePiece, 0);
+        break;
+    case LEVEL_UP:
+        Mix_PlayChannel(-1, gSavePiece, 0);
+        break;
+    case PAUSE:
+        Mix_PlayChannel(-1, gSavePiece, 0);
+        break;
+    }
+}
+
+void playMusic()
+{
+    // Play music
+    if (Mix_PlayingMusic() == 0) {
+        Mix_PlayMusic(gMusic, -1);
+    } else {
+    }
+}
+
+void pauseMusic()
+{
+    // Pause music
+    if (Mix_PlayingMusic() == 1) {
+        Mix_PausedMusic();
+    } else {
+        Mix_ResumeMusic();
+    }
+}
 
 bool load_files()
 {
+    // Load font
     Sans = TTF_OpenFont("../src/media/dejavu/DejaVuSerif-BoldItalic.ttf", 40);
-
     if (!Sans) {
         printf("TTF_Font Error %s\n", TTF_GetError());
         return false;
     }
+
+    // Load music and sounds
+    gMusic = Mix_LoadMUS("../src/media/music_effects/tetris_theme.mp3");
+    gMoveRL = Mix_LoadWAV("../src/media/music_effects/SFX_PieceMoveLR.wav");
+    gMoveRLFail = Mix_LoadWAV("../src/media/music_effects/SFX_PieceTouchLR.wav");
+    gRotate = Mix_LoadWAV("../src/media/music_effects/SFX_PieceRotateLR.wav");
+    gRotateFail = Mix_LoadWAV("../src/media/music_effects/SFX_PieceRotateFail.wav");
+    gSoftDrop = Mix_LoadWAV("../src/media/music_effects/SFX_PieceSoftDrop.wav");
+    gHardDrop = Mix_LoadWAV("../src/media/music_effects/SFX_PieceHardDrop.wav");
+    gSimpleLine = Mix_LoadWAV("../src/media/music_effects/SFX_SpecialLineClearSingle.wav");
+    gDoubleLine = Mix_LoadWAV("../src/media/music_effects/SFX_SpecialLineClearDouble.wav");
+    gTripleLine = Mix_LoadWAV("../src/media/music_effects/SFX_SpecialLineClearTriple.wav");
+    gTetris = Mix_LoadWAV("../src/media/music_effects/SFX_SpecialTetris.wav");
+    // gSavePiece = NULL;
+    // gPause = NULL;
+
+    if (!gMusic || !gMoveRL || !gMoveRLFail || !gRotate || !gRotateFail || !gSoftDrop || !gHardDrop || !gSimpleLine || !gDoubleLine || !gTetris) {
+        // if (!gTetris) {
+        char cwd[200];
+        getcwd(cwd, sizeof(cwd));
+        printf("Working directory: %s\n", cwd);
+        printf("Failed to load media file! SDL_mixer Error: %s\n", Mix_GetError());
+        return false;
+    }
+
+    // Load sounds
+
     return true;
 }
 
 void close_files()
 {
     TTF_CloseFont(Sans);
+    Mix_FreeMusic(gMusic);
+    gMusic = NULL;
 }
 
 void render_lines_made(SDL_Renderer* renderer, game_t* game, int* lines, int n_lines)
