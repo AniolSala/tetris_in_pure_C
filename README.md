@@ -41,11 +41,11 @@ If no errors appeared, then type:
 [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/)
 
 
-TODO:
+**TODO**:
 
-~~Add music and sound effects~~
-Add some animation when a line is completed
-Write the current level somewhere
-Improve the rendering of the side panel
+* ~~Add music and sound effects~~
+* Add some animation when a line is completed
+* Write the current level somewhere
+* Improve the rendering of the side panel
 
 ![tetris in C](./media/tetris.gif)
